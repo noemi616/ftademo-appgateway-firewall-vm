@@ -2,81 +2,84 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sites_webapp6c196d_name": {
+        "webapp_name": {
             "defaultValue": "webapp6c196d",
             "type": "String"
         },
-        "serverfarms_asp_6c196d_name": {
+        "appservice_name": {
             "defaultValue": "asp-6c196d",
             "type": "String"
         },
-        "azureFirewalls_fw_6c196d_name": {
+        "firewall_name": {
             "defaultValue": "fw-6c196d",
             "type": "String"
         },
-        "virtualNetworks_vnet_6c196d_name": {
+        "virtualNetwork_name": {
             "defaultValue": "vnet-6c196d",
             "type": "String"
         },
-        "virtualMachines_vm_web_6c196d_name": {
+        "vm_name": {
             "defaultValue": "vm-web-6c196d",
             "type": "String"
         },
-        "routeTables_udr_agw_fw_6c196d_name": {
+        "routeTables_udr_agw_fw_name": {
             "defaultValue": "udr-agw-fw-6c196d",
             "type": "String"
         },
-        "routeTables_udr_web_fw_6c196d_name": {
+        "routeTables_udr_web_fw_name": {
             "defaultValue": "udr-web-fw-6c196d",
             "type": "String"
         },
-        "applicationGateways_agw_6c196d_name": {
+        "applicationGateway_name": {
             "defaultValue": "agw-6c196d",
             "type": "String"
         },
-        "storageAccounts_storlogs6c196d_name": {
+        "storageAccount_name": {
             "defaultValue": "storlogs6c196d",
             "type": "String"
         },
-        "publicIPAddresses_pip_fw_6c196d_name": {
+        "publicIPAddress_fw_name": {
             "defaultValue": "pip-fw-6c196d",
             "type": "String"
         },
-        "publicIPAddresses_pip_agw_6c196d_name": {
+        "publicIPAddress_agw": {
             "defaultValue": "pip-agw-6c196d",
             "type": "String"
         },
-        "networkInterfaces_vm_web_6c196d99_name": {
+        "networkInterface_vm_name": {
             "defaultValue": "vm-web-6c196d99",
             "type": "String"
         },
-        "workspaces_log_6c196d_name": {
+        "logWorkspace_name": {
             "defaultValue": "log-6c196d",
             "type": "String"
         },
-        "networkSecurityGroups_nsg_agw_6c196d_name": {
+        "nsg_agw_name": {
             "defaultValue": "nsg-agw-6c196d",
             "type": "String"
         },
-        "networkSecurityGroups_vm_web_6c196d_nsg_name": {
+        "nsg_vm_name": {
             "defaultValue": "vm-web-6c196d-nsg",
             "type": "String"
         },
-        "schedules_shutdown_computevm_vm_web_6c196d_name": {
+        "vm_scheduledShutdown_name": {
             "defaultValue": "shutdown-computevm-vm-web-6c196d",
             "type": "String"
         },
-        "solutions_NetworkMonitoring_log_6c196d__name": {
+        "solutions_NetworkMonitoring_name": {
             "defaultValue": "NetworkMonitoring(log-6c196d)",
             "type": "String"
         }
     },
-    "variables": {},
+  "variables": {
+    "applicationGatewayDNS": "agw6c196d",
+    "firewallDNS": "fw6c196d"
+  },
     "resources": [
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_nsg_agw_6c196d_name')]",
+            "name": "[parameters('nsg_agw_name')]",
             "location": "australiaeast",
             "properties": {
                 "securityRules": [
@@ -120,7 +123,7 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkSecurityGroups_vm_web_6c196d_nsg_name')]",
+            "name": "[parameters('nsg_vm_name')]",
             "location": "australiaeast",
             "properties": {
                 "securityRules": []
@@ -129,7 +132,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('publicIPAddresses_pip_agw_6c196d_name')]",
+            "name": "[parameters('publicIPAddress_agw')]",
             "location": "australiaeast",
             "sku": {
                 "name": "Standard"
@@ -139,17 +142,17 @@
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
-                "dnsSettings": {
-                    "domainNameLabel": "agw6c196d",
-                    "fqdn": "agw6c196d.australiaeast.cloudapp.azure.com"
-                },
+              "dnsSettings": {
+                "domainNameLabel": "[variables('applicationGatewayDNS')]",
+                "fqdn": "[concat(variables('applicationGatewayDNS'), '.australiaeast.cloudapp.azure.com')]"
+              },
                 "ipTags": []
             }
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('publicIPAddresses_pip_fw_6c196d_name')]",
+            "name": "[parameters('publicIPAddress_fw_name')]",
             "location": "australiaeast",
             "sku": {
                 "name": "Standard"
@@ -159,17 +162,17 @@
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Static",
                 "idleTimeoutInMinutes": 4,
-                "dnsSettings": {
-                    "domainNameLabel": "fw6c196d",
-                    "fqdn": "fw6c196d.australiaeast.cloudapp.azure.com"
-                },
+              "dnsSettings": {
+                "domainNameLabel": "[variables('firewallDNS')]",
+                "fqdn": "[concat(variables('firewallDNS'), '.australiaeast.cloudapp.azure.com')]"
+              },
                 "ipTags": []
             }
         },
         {
             "type": "Microsoft.Network/routeTables",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('routeTables_udr_agw_fw_6c196d_name')]",
+            "name": "[parameters('routeTables_udr_agw_fw_name')]",
             "location": "australiaeast",
             "properties": {
                 "disableBgpRoutePropagation": false,
@@ -188,7 +191,7 @@
         {
             "type": "Microsoft.Network/routeTables",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('routeTables_udr_web_fw_6c196d_name')]",
+            "name": "[parameters('routeTables_udr_web_fw_name')]",
             "location": "australiaeast",
             "properties": {
                 "disableBgpRoutePropagation": false,
@@ -215,7 +218,7 @@
         {
             "type": "microsoft.operationalinsights/workspaces",
             "apiVersion": "2020-08-01",
-            "name": "[parameters('workspaces_log_6c196d_name')]",
+            "name": "[parameters('logWorkspace_name')]",
             "location": "australiaeast",
             "properties": {
                 "provisioningState": "Succeeded",
@@ -233,7 +236,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
-            "name": "[parameters('storageAccounts_storlogs6c196d_name')]",
+            "name": "[parameters('storageAccount_name')]",
             "location": "australiaeast",
             "sku": {
                 "name": "Standard_LRS",
@@ -269,7 +272,7 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
-            "name": "[parameters('serverfarms_asp_6c196d_name')]",
+            "name": "[parameters('appservice_name')]",
             "location": "Australia East",
             "sku": {
                 "name": "B1",
@@ -293,10 +296,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-07-01",
-            "name": "[parameters('virtualMachines_vm_web_6c196d_name')]",
+            "name": "[parameters('vm_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_web_6c196d99_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterface_vm_name'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -311,19 +314,19 @@
                     },
                     "osDisk": {
                         "osType": "Windows",
-                        "name": "[concat(parameters('virtualMachines_vm_web_6c196d_name'), '_OsDisk_1_99aab29c5456427cbb0b5ef6a97430b0')]",
+                        "name": "[concat(parameters('vm_name'), '_OsDisk_1_99aab29c5456427cbb0b5ef6a97430b0')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
                             "storageAccountType": "StandardSSD_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_vm_web_6c196d_name'), '_OsDisk_1_99aab29c5456427cbb0b5ef6a97430b0'))]"
+                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('vm_name'), '_OsDisk_1_99aab29c5456427cbb0b5ef6a97430b0'))]"
                         },
                         "diskSizeGB": 127
                     },
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_vm_web_6c196d_name')]",
+                    "computerName": "[parameters('vm_name')]",
                     "adminUsername": "svradmin",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
@@ -336,7 +339,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_web_6c196d99_name'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterface_vm_name'))]"
                         }
                     ]
                 }
@@ -345,10 +348,10 @@
         {
             "type": "microsoft.devtestlab/schedules",
             "apiVersion": "2018-09-15",
-            "name": "[parameters('schedules_shutdown_computevm_vm_web_6c196d_name')]",
+            "name": "[parameters('vm_scheduledShutdown_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_vm_web_6c196d_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vm_name'))]"
             ],
             "properties": {
                 "status": "Enabled",
@@ -362,15 +365,15 @@
                     "timeInMinutes": 30,
                     "notificationLocale": "en"
                 },
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_vm_web_6c196d_name'))]"
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vm_name'))]"
             }
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_agw_6c196d_name'), '/AllowGatewayManagerInBound')]",
+            "name": "[concat(parameters('nsg_agw_name'), '/AllowGatewayManagerInBound')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]"
             ],
             "properties": {
                 "protocol": "*",
@@ -390,9 +393,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_agw_6c196d_name'), '/AllowPort3443Inbound')]",
+            "name": "[concat(parameters('nsg_agw_name'), '/AllowPort3443Inbound')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]"
             ],
             "properties": {
                 "protocol": "*",
@@ -412,9 +415,9 @@
         {
             "type": "Microsoft.Network/routeTables/routes",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('routeTables_udr_agw_fw_6c196d_name'), '/agw-dg')]",
+            "name": "[concat(parameters('routeTables_udr_agw_fw_name'), '/agw-dg')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_name'))]"
             ],
             "properties": {
                 "addressPrefix": "192.168.1.0/24",
@@ -425,9 +428,9 @@
         {
             "type": "Microsoft.Network/routeTables/routes",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('routeTables_udr_web_fw_6c196d_name'), '/fw-dg')]",
+            "name": "[concat(parameters('routeTables_udr_web_fw_name'), '/fw-dg')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]"
             ],
             "properties": {
                 "addressPrefix": "0.0.0.0/0",
@@ -438,9 +441,9 @@
         {
             "type": "Microsoft.Network/routeTables/routes",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('routeTables_udr_web_fw_6c196d_name'), '/fw-dg2')]",
+            "name": "[concat(parameters('routeTables_udr_web_fw_name'), '/fw-dg2')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]"
             ],
             "properties": {
                 "addressPrefix": "192.168.200.0/24",
@@ -451,9 +454,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_6c196d_name'), '/AzureFirewallSubnet')]",
+            "name": "[concat(parameters('virtualNetwork_name'), '/AzureFirewallSubnet')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetwork_name'))]"
             ],
             "properties": {
                 "addressPrefix": "192.168.100.0/24",
@@ -466,9 +469,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_General|AlphabeticallySortedComputers')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_General|AlphabeticallySortedComputers')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Computers with their most recent data",
@@ -480,9 +483,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_General|dataPointsPerManagementGroup')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_General|dataPointsPerManagementGroup')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Which Management Group is generating the most data points?",
@@ -494,9 +497,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_General|dataTypeDistribution')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_General|dataTypeDistribution')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Distribution of data Types",
@@ -508,9 +511,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_General|StaleComputers')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_General|StaleComputers')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Stale Computers (data older than 24 hours)",
@@ -522,9 +525,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AllEvents')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AllEvents')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Events",
@@ -536,9 +539,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AllSyslog')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AllSyslog')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Syslogs",
@@ -550,9 +553,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AllSyslogByFacility')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AllSyslogByFacility')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Syslog Records grouped by Facility",
@@ -564,9 +567,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AllSyslogByProcessName')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AllSyslogByProcessName')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Syslog Records grouped by ProcessName",
@@ -578,9 +581,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AllSyslogsWithErrors')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AllSyslogsWithErrors')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Syslog Records with Errors",
@@ -592,9 +595,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AverageHTTPRequestTimeByClientIPAddress')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AverageHTTPRequestTimeByClientIPAddress')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Average HTTP Request time by Client IP Address",
@@ -606,9 +609,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|AverageHTTPRequestTimeHTTPMethod')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|AverageHTTPRequestTimeHTTPMethod')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Average HTTP Request time by HTTP Method",
@@ -620,9 +623,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountIISLogEntriesClientIPAddress')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountIISLogEntriesClientIPAddress')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by Client IP Address",
@@ -634,9 +637,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountIISLogEntriesHTTPRequestMethod')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountIISLogEntriesHTTPRequestMethod')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by HTTP Request Method",
@@ -648,9 +651,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountIISLogEntriesHTTPUserAgent')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountIISLogEntriesHTTPUserAgent')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by HTTP User Agent",
@@ -662,9 +665,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountOfIISLogEntriesByHostRequestedByClient')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountOfIISLogEntriesByHostRequestedByClient')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by Host requested by client",
@@ -676,9 +679,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountOfIISLogEntriesByURLForHost')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountOfIISLogEntriesByURLForHost')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by URL for the host \"www.contoso.com\" (replace with your own)",
@@ -690,9 +693,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountOfIISLogEntriesByURLRequestedByClient')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountOfIISLogEntriesByURLRequestedByClient')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of IIS Log Entries by URL requested by client (without query strings)",
@@ -704,9 +707,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|CountOfWarningEvents')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|CountOfWarningEvents')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of Events with level \"Warning\" grouped by Event ID",
@@ -718,9 +721,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|DisplayBreakdownRespondCodes')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|DisplayBreakdownRespondCodes')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Shows breakdown of response codes",
@@ -732,9 +735,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|EventsByEventLog')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|EventsByEventLog')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of Events grouped by Event Log",
@@ -746,9 +749,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|EventsByEventsID')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|EventsByEventsID')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of Events grouped by Event ID",
@@ -760,9 +763,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|EventsByEventSource')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|EventsByEventSource')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of Events grouped by Event Source",
@@ -774,9 +777,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|EventsInOMBetween2000to3000')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|EventsInOMBetween2000to3000')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Events in the Operations Manager Event Log whose Event ID is in the range between 2000 and 3000",
@@ -788,9 +791,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|EventsWithStartedinEventID')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|EventsWithStartedinEventID')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Count of Events containing the word \"started\" grouped by EventID",
@@ -802,9 +805,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|FindMaximumTimeTakenForEachPage')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|FindMaximumTimeTakenForEachPage')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Find the maximum time taken for each page",
@@ -816,9 +819,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|IISLogEntriesForClientIP')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|IISLogEntriesForClientIP')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "IIS Log Entries for a specific client IP Address (replace with your own)",
@@ -830,9 +833,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|ListAllIISLogEntries')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|ListAllIISLogEntries')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All IIS Log Entries",
@@ -844,9 +847,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|NoOfConnectionsToOMSDKService')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|NoOfConnectionsToOMSDKService')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "How many connections to Operations Manager's SDK service by day",
@@ -858,9 +861,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|ServerRestartTime')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|ServerRestartTime')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "When did my servers initiate restart?",
@@ -872,9 +875,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|Show404PagesList')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|Show404PagesList')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Shows which pages people are getting a 404 for",
@@ -886,9 +889,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|ShowServersThrowingInternalServerError')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|ShowServersThrowingInternalServerError')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Shows servers that are throwing internal server error",
@@ -900,9 +903,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|TotalBytesReceivedByEachAzureRoleInstance')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|TotalBytesReceivedByEachAzureRoleInstance')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Total Bytes received by each Azure Role Instance",
@@ -914,9 +917,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|TotalBytesReceivedByEachIISComputer')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|TotalBytesReceivedByEachIISComputer')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Total Bytes received by each IIS Computer",
@@ -928,9 +931,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|TotalBytesRespondedToClientsByClientIPAddress')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|TotalBytesRespondedToClientsByClientIPAddress')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Total Bytes responded back to clients by Client IP Address",
@@ -942,9 +945,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|TotalBytesRespondedToClientsByEachIISServerIPAddress')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|TotalBytesRespondedToClientsByEachIISServerIPAddress')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Total Bytes responded back to clients by each IIS ServerIP Address",
@@ -956,9 +959,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|TotalBytesSentByClientIPAddress')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|TotalBytesSentByClientIPAddress')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Total Bytes sent by Client IP Address",
@@ -970,9 +973,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|WarningEvents')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|WarningEvents')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "All Events with level \"Warning\"",
@@ -984,9 +987,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|WindowsFireawallPolicySettingsChanged')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|WindowsFireawallPolicySettingsChanged')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "Windows Firewall Policy settings have changed",
@@ -998,9 +1001,9 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaces_log_6c196d_name'), '/LogManagement(', parameters('workspaces_log_6c196d_name'), ')_LogManagement|WindowsFireawallPolicySettingsChangedByMachines')]",
+            "name": "[concat(parameters('logWorkspace_name'), '/LogManagement(', parameters('logWorkspace_name'), ')_LogManagement|WindowsFireawallPolicySettingsChangedByMachines')]",
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "properties": {
                 "DisplayName": "On which machines and how many times have Windows Firewall Policy settings changed",
@@ -1012,10 +1015,10 @@
         {
             "type": "Microsoft.OperationsManagement/solutions",
             "apiVersion": "2015-11-01-preview",
-            "name": "[parameters('solutions_NetworkMonitoring_log_6c196d__name')]",
+            "name": "[parameters('solutions_NetworkMonitoring_name')]",
             "location": "Australia East",
             "dependsOn": [
-                "[resourceId('microsoft.operationalinsights/workspaces', parameters('workspaces_log_6c196d_name'))]"
+                "[resourceId('microsoft.operationalinsights/workspaces', parameters('logWorkspace_name'))]"
             ],
             "plan": {
                 "name": "NetworkMonitoring(log-6c196d)",
@@ -1024,18 +1027,18 @@
                 "publisher": "Microsoft"
             },
             "properties": {
-                "workspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('workspaces_log_6c196d_name'))]",
+                "workspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('logWorkspace_name'))]",
                 "containedResources": [
-                    "[concat(resourceId('microsoft.operationalinsights/workspaces', parameters('workspaces_log_6c196d_name')), concat('/views/', parameters('solutions_NetworkMonitoring_log_6c196d__name')))]"
+                    "[concat(resourceId('microsoft.operationalinsights/workspaces', parameters('logWorkspace_name')), concat('/views/', parameters('solutions_NetworkMonitoring_name')))]"
                 ]
             }
         },
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_storlogs6c196d_name'), '/default')]",
+            "name": "[concat(parameters('storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storlogs6c196d_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -1053,9 +1056,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_storlogs6c196d_name'), '/default')]",
+            "name": "[concat(parameters('storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storlogs6c196d_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -1070,9 +1073,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_storlogs6c196d_name'), '/default')]",
+            "name": "[concat(parameters('storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storlogs6c196d_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -1083,9 +1086,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_storlogs6c196d_name'), '/default')]",
+            "name": "[concat(parameters('storageAccount_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storlogs6c196d_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -1096,27 +1099,27 @@
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
-            "name": "[parameters('sites_webapp6c196d_name')]",
+            "name": "[parameters('webapp_name')]",
             "location": "Australia East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_asp_6c196d_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appservice_name'))]"
             ],
             "kind": "app",
             "properties": {
                 "enabled": true,
                 "hostNameSslStates": [
                     {
-                        "name": "[concat(parameters('sites_webapp6c196d_name'), '.azurewebsites.net')]",
+                        "name": "[concat(parameters('webapp_name'), '.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "hostType": "Standard"
                     },
                     {
-                        "name": "[concat(parameters('sites_webapp6c196d_name'), '.scm.azurewebsites.net')]",
+                        "name": "[concat(parameters('webapp_name'), '.scm.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_asp_6c196d_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appservice_name'))]",
                 "reserved": false,
                 "isXenon": false,
                 "hyperV": false,
@@ -1134,10 +1137,10 @@
         {
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2018-11-01",
-            "name": "[concat(parameters('sites_webapp6c196d_name'), '/web')]",
+            "name": "[concat(parameters('webapp_name'), '/web')]",
             "location": "Australia East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_webapp6c196d_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('webapp_name'))]"
             ],
             "properties": {
                 "numberOfWorkers": 1,
@@ -1206,10 +1209,10 @@
         {
             "type": "Microsoft.Web/sites/hostNameBindings",
             "apiVersion": "2018-11-01",
-            "name": "[concat(parameters('sites_webapp6c196d_name'), '/', parameters('sites_webapp6c196d_name'), '.azurewebsites.net')]",
+            "name": "[concat(parameters('webapp_name'), '/', parameters('webapp_name'), '.azurewebsites.net')]",
             "location": "Australia East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_webapp6c196d_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('webapp_name'))]"
             ],
             "properties": {
                 "siteName": "webapp6c196d",
@@ -1219,11 +1222,11 @@
         {
             "type": "Microsoft.Network/applicationGateways",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('applicationGateways_agw_6c196d_name')]",
+            "name": "[parameters('applicationGateway_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'snet-appgateway')]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_agw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'snet-appgateway')]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_agw'))]"
             ],
             "properties": {
                 "sku": {
@@ -1235,7 +1238,7 @@
                         "name": "appGatewayIpConfig",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'snet-appgateway')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'snet-appgateway')]"
                             }
                         }
                     }
@@ -1248,7 +1251,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_agw_6c196d_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_agw'))]"
                             }
                         }
                     },
@@ -1258,7 +1261,7 @@
                             "privateIPAddress": "192.168.200.4",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'snet-appgateway')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'snet-appgateway')]"
                             }
                         }
                     }
@@ -1310,7 +1313,7 @@
                             "affinityCookieName": "ApplicationGatewayAffinity",
                             "requestTimeout": 20,
                             "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/probes/probe1')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/probes/probe1')]"
                             }
                         }
                     }
@@ -1320,10 +1323,10 @@
                         "name": "httplistener_public",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
                             },
                             "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/frontendPorts/port_3443')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/frontendPorts/port_3443')]"
                             },
                             "protocol": "Http",
                             "hostNames": [],
@@ -1338,13 +1341,13 @@
                         "properties": {
                             "ruleType": "Basic",
                             "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/httpListeners/httplistener_public')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/httpListeners/httplistener_public')]"
                             },
                             "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/backendAddressPools/pool2')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/backendAddressPools/pool2')]"
                             },
                             "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_agw_6c196d_name')), '/backendHttpSettingsCollection/httpsettings2')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateway_name')), '/backendHttpSettingsCollection/httpsettings2')]"
                             }
                         }
                     }
@@ -1388,11 +1391,11 @@
         {
             "type": "Microsoft.Network/azureFirewalls",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('azureFirewalls_fw_6c196d_name')]",
+            "name": "[parameters('firewall_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_fw_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'AzureFirewallSubnet')]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_fw_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'AzureFirewallSubnet')]"
             ],
             "properties": {
                 "sku": {
@@ -1405,13 +1408,13 @@
                 },
                 "ipConfigurations": [
                     {
-                        "name": "[concat('pip-', parameters('azureFirewalls_fw_6c196d_name'))]",
+                        "name": "[concat('pip-', parameters('firewall_name'))]",
                         "properties": {
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_pip_fw_6c196d_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_fw_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'AzureFirewallSubnet')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'AzureFirewallSubnet')]"
                             }
                         }
                     }
@@ -1644,11 +1647,11 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('networkInterfaces_vm_web_6c196d99_name')]",
+            "name": "[parameters('networkInterface_vm_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'snet-web')]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_vm_web_6c196d_nsg_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'snet-web')]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_vm_name'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -1658,7 +1661,7 @@
                             "privateIPAddress": "192.168.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_6c196d_name'), 'snet-web')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork_name'), 'snet-web')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -1671,22 +1674,22 @@
                 "enableAcceleratedNetworking": false,
                 "enableIPForwarding": false,
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_vm_web_6c196d_nsg_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_vm_name'))]"
                 }
             }
         },
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_6c196d_name'), '/snet-web')]",
+            "name": "[concat(parameters('virtualNetwork_name'), '/snet-web')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetwork_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]"
             ],
             "properties": {
                 "addressPrefix": "192.168.1.0/24",
                 "routeTable": {
-                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]"
+                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]"
                 },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
@@ -1696,10 +1699,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_storlogs6c196d_name'), '/default/insights-logs-networksecuritygroupflowevent')]",
+            "name": "[concat(parameters('storageAccount_name'), '/default/insights-logs-networksecuritygroupflowevent')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_storlogs6c196d_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storlogs6c196d_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccount_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount_name'))]"
             ],
             "properties": {
                 "defaultEncryptionScope": "$account-encryption-key",
@@ -1710,12 +1713,12 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-05-01",
-            "name": "[parameters('virtualNetworks_vnet_6c196d_name')]",
+            "name": "[parameters('virtualNetwork_name')]",
             "location": "australiaeast",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_name'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -1745,7 +1748,7 @@
                         "properties": {
                             "addressPrefix": "192.168.1.0/24",
                             "routeTable": {
-                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_6c196d_name'))]"
+                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_web_fw_name'))]"
                             },
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
@@ -1757,10 +1760,10 @@
                         "properties": {
                             "addressPrefix": "192.168.200.0/24",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]"
                             },
                             "routeTable": {
-                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_6c196d_name'))]"
+                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_name'))]"
                             },
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
@@ -1776,19 +1779,19 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_6c196d_name'), '/snet-appgateway')]",
+            "name": "[concat(parameters('virtualNetwork_name'), '/snet-appgateway')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]",
-                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_6c196d_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetwork_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_name'))]"
             ],
             "properties": {
                 "addressPrefix": "192.168.200.0/24",
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_agw_6c196d_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg_agw_name'))]"
                 },
                 "routeTable": {
-                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_6c196d_name'))]"
+                    "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_udr_agw_fw_name'))]"
                 },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",

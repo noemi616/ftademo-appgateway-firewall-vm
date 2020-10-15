@@ -1,57 +1,57 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "sites_webapp6c196d_name": {
-            "value": null
-        },
-        "serverfarms_asp_6c196d_name": {
-            "value": null
-        },
-        "azureFirewalls_fw_6c196d_name": {
-            "value": null
-        },
-        "virtualNetworks_vnet_6c196d_name": {
-            "value": null
-        },
-        "virtualMachines_vm_web_6c196d_name": {
-            "value": null
-        },
-        "routeTables_udr_agw_fw_6c196d_name": {
-            "value": null
-        },
-        "routeTables_udr_web_fw_6c196d_name": {
-            "value": null
-        },
-        "applicationGateways_agw_6c196d_name": {
-            "value": null
-        },
-        "storageAccounts_storlogs6c196d_name": {
-            "value": null
-        },
-        "publicIPAddresses_pip_fw_6c196d_name": {
-            "value": null
-        },
-        "publicIPAddresses_pip_agw_6c196d_name": {
-            "value": null
-        },
-        "networkInterfaces_vm_web_6c196d99_name": {
-            "value": null
-        },
-        "workspaces_log_6c196d_name": {
-            "value": null
-        },
-        "networkSecurityGroups_nsg_agw_6c196d_name": {
-            "value": null
-        },
-        "networkSecurityGroups_vm_web_6c196d_nsg_name": {
-            "value": null
-        },
-        "schedules_shutdown_computevm_vm_web_6c196d_name": {
-            "value": null
-        },
-        "solutions_NetworkMonitoring_log_6c196d__name": {
-            "value": null
-        }
+  "parameters": {
+    "webapp_name": {
+      "value": null
+    },
+    "appservice_name": {
+      "value": null
+    },
+    "firewall_name": {
+      "value": null
+    },
+    "virtualNetwork_name": {
+      "value": null
+    },
+    "vm_name": {
+      "value": null
+    },
+    "routeTables_udr_agw_fw_name": {
+      "value": null
+    },
+    "routeTables_udr_web_fw_name": {
+      "value": null
+    },
+    "applicationGateway_name": {
+      "value": null
+    },
+    "storageAccount_name": {
+      "value": null
+    },
+    "publicIPAddress_fw_name": {
+      "value": null
+    },
+    "publicIPAddress_agw": {
+      "value": null
+    },
+    "networkInterface_vm_name": {
+      "value": null
+    },
+    "logWorkspace_name": {
+      "value": null
+    },
+    "nsg_agw_name": {
+      "value": null
+    },
+    "nsg_vm_name": {
+      "value": null
+    },
+    "vm_scheduledShutdown_name": {
+      "value": null
+    },
+    "solutions_NetworkMonitoring_name": {
+      "value": null
     }
+  }
 }
