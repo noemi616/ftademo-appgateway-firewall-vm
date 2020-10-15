@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_webapp6c196d_name": {
+            "value": null
+        },
+        "serverfarms_asp_6c196d_name": {
+            "value": null
+        },
+        "azureFirewalls_fw_6c196d_name": {
+            "value": null
+        },
+        "virtualNetworks_vnet_6c196d_name": {
+            "value": null
+        },
+        "virtualMachines_vm_web_6c196d_name": {
+            "value": null
+        },
+        "routeTables_udr_agw_fw_6c196d_name": {
+            "value": null
+        },
+        "routeTables_udr_web_fw_6c196d_name": {
+            "value": null
+        },
+        "applicationGateways_agw_6c196d_name": {
+            "value": null
+        },
+        "storageAccounts_storlogs6c196d_name": {
+            "value": null
+        },
+        "publicIPAddresses_pip_fw_6c196d_name": {
+            "value": null
+        },
+        "publicIPAddresses_pip_agw_6c196d_name": {
+            "value": null
+        },
+        "networkInterfaces_vm_web_6c196d99_name": {
+            "value": null
+        },
+        "workspaces_log_6c196d_name": {
+            "value": null
+        },
+        "networkSecurityGroups_nsg_agw_6c196d_name": {
+            "value": null
+        },
+        "networkSecurityGroups_vm_web_6c196d_nsg_name": {
+            "value": null
+        },
+        "schedules_shutdown_computevm_vm_web_6c196d_name": {
+            "value": null
+        },
+        "solutions_NetworkMonitoring_log_6c196d__name": {
+            "value": null
+        }
+    }
+}
